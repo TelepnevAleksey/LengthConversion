@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang = "en">
+  <head>
+    <meta charset = "utf-8">
+    <meta name = "viewport" content = "width = device-width">
+    <title> Length measure conversion</title>  
+  </head>
+ 
+  
+  <body onload="loadPage()">
+    <H1> Length conversion from different measure units.</H1>
+    <table>
+      <tr>
+        <td> <input type = "text" id = "Length1" onchange = "calculateLength2()" style = "text-align:right"> </td>
+        <td> 
+          <select id = "LengthMeasureList1" onchange = "changeLengthMeasure1()"> </select>        
+        </td>
+        <td>  =  </td>
+        <td > <input type = "text" id = "Length2" style = "text-align:right" readonly = "readonly"> </td>
+        <td> 
+          <select id = "LengthMeasureList2" onchange = "changeLengthMeasure2()"> </select>        
+        </td>        
+      </tr>    
+    </table>
+  
+ 
+	
+	 
+  <script>
+    let lengthMeasure1index = 0;
+    let lengthMeasure2index = 0;
+    let coef1 = 1;
+    let coef2 = 1;
+    let unitsInfoText = '{ "measureUnits" : ['+
+                '{"name" : "mm", "coefConvertToM" : "0.001"},' +
+                '{"name" : "sm", "coefConvertToM" : "0.01"},' +
+                '{"name" : "m", "coefConvertToM" : "1"},' +
+                '{"name" : "km", "coefConvertToM" : "1000"},' +
+                ' {"name" : "in", "coefConvertToM" : "0.0254"}, ' +
+                '{"name" : "ft", "coefConvertToM" : "0.3048"}, ' +
+                '{"name" : "yd", "coefConvertToM" : " 0.9144"} ]}';
+  
+    let unitsInfo = 0;
+    
+    function changeLengthMeasure1(){
+       lengthMeasure1index = LengthMeasureList1.selectedIndex;
+       coef1 = unitsInfo.measureUnits[lengthMeasure1index].coefConvertToM;
+       calculateLength2();
+    }
+    
+    function changeLengthMeasure2(){
+       lengthMeasure2index = LengthMeasureList2.selectedIndex;
+       coef2 = unitsInfo.measureUnits[lengthMeasure2index].coefConvertToM;
+       calculateLength2();
+    }
+  
+    function loadPage(){  
+      var options = "";
+      unitsInfo = JSON.parse(unitsInfoText);
+      console.log(unitsInfo.measureUnits);
+        
+      for (var i = 0; i < unitsInfo.measureUnits.length; i++){
+        options += '<option>' + unitsInfo.measureUnits[i].name + '</option>'
+      }
+      document.getElementById("LengthMeasureList1").innerHTML = options;
+      document.getElementById("LengthMeasureList2").innerHTML = options;
+      lengthMeasure1index = 0;
+      lengthMeasure2index = 0;  
+      coef1 = unitsInfo.measureUnits[lengthMeasure1index].coefConvertToM;
+      coef2 = unitsInfo.measureUnits[lengthMeasure2index].coefConvertToM;  
+      document.getElementById("Length2").value = "???";
+    
+    }
+    
+    function calculateLength2(){
+      var length1 = parseFloat(document.getElementById("Length1").value);    
+      if ((length1 > 0) && (coef2 > 0)){      
+        var length2 = (length1 * coef1 / coef2).toFixed(3);      
+        document.getElementById("Length2").value = length2;
+      }
+      else document.getElementById("Length2").value = "???";
+    }
+  
+  </script>
+  </body>
+
+</html>
